@@ -1,1 +1,11 @@
-# Press-script
+# 数据库压测脚本
+## 实现的功能：
+1. 创建一个大表
+2. 多行的增删改查
+3. 主键冲突
+4. 产生死锁
+## 代码描述
+1. Deal_data类定义了数据库连接方法，实现了增删改查和主键冲突的功能
+2. Deadlock类继承Deal_data,实现了两个事务并发修改数据造成死锁
+3. Transfer_func对Deal_data,Deadlock实例化调用
+4. 实例化Transfer_func，传入数据库相关的数据
