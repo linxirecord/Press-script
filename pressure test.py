@@ -1,6 +1,7 @@
 import pymysql
 import threading,time
 class Deal_data(object):
+#    '''insert、select、update、delete data and primary key violation'''
     def __init__(self,host,port,user,passwd,db,tb):
         self.host=host
         self.user=user
@@ -40,6 +41,7 @@ class Deal_data(object):
         except Exception as e:
             print(e)
 class Deadlock(Deal_data):
+    '''create deadlock'''
     def __init__(self,host,port,user,password,db,tb):
         super(Deadlock, self).__init__(host,port,user,password,db,tb)
     def transaction1(self):
@@ -70,6 +72,7 @@ class Deadlock(Deal_data):
             print(e)
 
 class Transfer_func(Deal_data):
+    '''transfer functions'''
     def __init__(self,host,port,user,passwd,db,tb):
         super(Transfer_func, self).__init__(host,port,user,passwd,db,tb)
     def transfer_deadlock(self):
