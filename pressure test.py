@@ -1,7 +1,7 @@
 import pymysql
 import threading,time
 class Deal_data(object):
-#    '''insert、select、update、delete data and primary key violation'''
+    '''insert、select、update、delete data and primary key violation'''
     def __init__(self,host,port,user,passwd,db,tb):
         self.host=host
         self.user=user
