@@ -9,3 +9,12 @@
 2. Deadlock类继承Deal_data,实现了两个事务并发修改数据造成死锁
 3. Transfer_func对Deal_data,Deadlock实例化调用
 4. 实例化Transfer_func，传入数据库相关的数据
+## 表结构：
+> CREATE TABLE `test` (
+>  `id` int(11) NOT NULL AUTO_INCREMENT,
+>  `uname` varchar(32) NOT NULL,
+>  `password` varchar(64) NOT NULL,
+>  `date` date NOT NULL,
+>  `money` float DEFAULT NULL,
+>  PRIMARY KEY (`id`)
+> ) ENGINE=InnoDB AUTO_INCREMENT=6684557 DEFAULT CHARSET=utf8; 
