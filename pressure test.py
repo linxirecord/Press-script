@@ -34,13 +34,14 @@ class Create_table(object):
 
 class Deal_data(object):
     '''INSERT...SELECT...、SELECT、UPDATE、DELETE data and primary key violation'''
-    def __init__(self,host,port,user,passwd,db,tb):
+    def __init__(self,host,port,user,passwd,db,tb,num):
         self.host=host
         self.user=user
         self.passwd=passwd
         self.port=port
         self.db=db
         self.tb=tb
+        self.num=num
     def connect_db(self,sql):
         conn=pymysql.connect(host=self.host,port=self.port,user=self.user,password=self.passwd,db=self.db,
                              charset='utf8mb4',cursorclass=pymysql.cursors.DictCursor)
@@ -50,7 +51,7 @@ class Deal_data(object):
         cursor.close()
         conn.close()
     def insert_manydata(self):
-        for i in range(21):
+        for i in range(self.num):
             sql="insert into %s.%s (%s,%s,%s,%s) select %s,%s,%s,%s from %s.%s;"%(self.db,self.tb,'uname','password','date','money','uname','password','date','money',self.db,self.tb)
             Deal_data.connect_db(self,sql)
         print("插入数据完成")
@@ -74,8 +75,8 @@ class Deal_data(object):
             print(e)
 class Deadlock(Deal_data):
     '''create deadlock'''
-    def __init__(self,host,port,user,password,db,tb):
-        super(Deadlock, self).__init__(host,port,user,password,db,tb)
+    def __init__(self,host,port,user,password,db,tb,num):
+        super(Deadlock, self).__init__(host,port,user,password,db,tb,num)
     def transaction1(self):
         try:
             conn = pymysql.connect(host=self.host, port=self.port, user=self.user, password=self.passwd, db=self.db,
@@ -110,7 +111,7 @@ class Transfer_func(Deal_data):
     def transfer_deadlock(self):
         trans_list=[]
         p_obj_list=[]
-        Dl=Deadlock(self.host,self.port,self.user,self.passwd,self.db,self.tb)
+        Dl=Deadlock(self.host,self.port,self.user,self.passwd,self.db,self.tb,self.num)
         trans_list.append(Dl.transaction1)
         trans_list.append(Dl.transaction2)
         for i in trans_list:
@@ -122,13 +123,27 @@ class Transfer_func(Deal_data):
     def transfer_deal_data(self):
         C = Create_table()
         C.create_table()
-        dealdata=Deal_data(self.host,self.port,self.user,self.passwd,self.db,self.tb)
+        dealdata=Deal_data(self.host,self.port,self.user,self.passwd,self.db,self.tb,self.num)
         dealdata.insert_manydata()
         dealdata.select_data()
         dealdata.update_data()
         dealdata.delete_data()
         dealdata.Primary_key_violation()
+       
+     def transfer_clear_data(self):
+        confirm=input("are you truncate and drop table? Y|N:")
+        if confirm=='Y'or confirm=='Y'.lower():
+            sql="truncate table %s"%self.tb
+            sql1="drop table %s"%self.tb
+            dealdata=Deal_data(self.host,self.port,self.user,self.passwd,self.db,self.tb,self.num)
+            dealdata.connect_db(sql)
+            dealdata.connect_db(sql1)
+        elif confirm=='N' or confirm=='N'.lower():
+            pass
+        else:
+            return "input error"
 
-transfer=Transfer_func('192.168.5.10',3306,'root','Lw123456..+','acount','test')
+transfer=Transfer_func('192.168.5.10',3306,'root','Lw123456..+','acount','test',20)
 transfer.transfer_deal_data()
 transfer.transfer_deadlock()
+transfer.transfer_clear_data()
